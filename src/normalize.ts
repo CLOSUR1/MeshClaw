@@ -95,8 +95,10 @@ export function normalizeMeshtasticAllowEntry(raw: string): string {
 }
 
 /** Normalize a list of allowlist entries. */
-export function normalizeMeshtasticAllowlist(entries?: string[]): string[] {
-  return (entries ?? []).map((entry) => normalizeMeshtasticAllowEntry(entry)).filter(Boolean);
+export function normalizeMeshtasticAllowlist(entries?: unknown[]): string[] {
+  return (entries ?? [])
+    .map((entry) => (typeof entry === "string" ? normalizeMeshtasticAllowEntry(entry) : ""))
+    .filter(Boolean);
 }
 
 /** Check if sender matches an allowlist. */
