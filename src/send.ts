@@ -1,4 +1,7 @@
 import { randomUUID } from "node:crypto";
+
+import { stripMarkdown } from "openclaw/plugin-sdk";
+
 import { resolveMeshtasticAccount } from "./accounts.js";
 import { hexToNodeNum, normalizeMeshtasticMessagingTarget } from "./normalize.js";
 import { getMeshtasticRuntime } from "./runtime.js";
@@ -50,13 +53,15 @@ export async function sendMessageMeshtastic(
   if (!account.configured) {
     throw new Error(
       `Meshtastic is not configured for account "${account.accountId}". ` +
-        `Set channels.meshtastic.transport and connection details.`,
+        `Run 'openclaw setup' or set channels.meshtastic.transport and connection details in config.`,
     );
   }
 
   const target = normalizeMeshtasticMessagingTarget(to);
   if (!target) {
-    throw new Error(`Invalid Meshtastic target: ${to}`);
+    throw new Error(
+      `Invalid Meshtastic target: "${to}". Use a node ID like "!aabbccdd" or a channel name like "channel:LongFast".`,
+    );
   }
 
   const tableMode = runtime.channel.text.resolveMarkdownTableMode({
@@ -65,7 +70,8 @@ export async function sendMessageMeshtastic(
     accountId: account.accountId,
   });
   const prepared = runtime.channel.text.convertMarkdownTables(text.trim(), tableMode);
-  if (!prepared.trim()) {
+  const stripped = stripMarkdown(prepared);
+  if (!stripped.trim()) {
     throw new Error("Message must be non-empty for Meshtastic sends");
   }
 
@@ -73,17 +79,17 @@ export async function sendMessageMeshtastic(
 
   if (transport === "mqtt") {
     if (activeMqttSend) {
-      await activeMqttSend(prepared, target, opts.channelName);
+      await activeMqttSend(stripped, target, opts.channelName);
     } else {
-      throw new Error("No active MQTT connection. Start the gateway first.");
+      throw new Error("No active MQTT connection. Run 'openclaw gateway start' to connect.");
     }
   } else {
     // Serial or HTTP: use active transport if available.
     if (activeSerialSend) {
       const destination = target.startsWith("!") ? hexToNodeNum(target) : undefined;
-      await activeSerialSend(prepared, destination, opts.channelIndex);
+      await activeSerialSend(stripped, destination, opts.channelIndex);
     } else {
-      throw new Error(`No active ${transport} connection. Start the gateway first.`);
+      throw new Error(`No active ${transport} connection. Run 'openclaw gateway start' to connect.`);
     }
   }
 
