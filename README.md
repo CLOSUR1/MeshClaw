@@ -19,7 +19,7 @@
   <img src="media/GoMeshClaw.png" width="700" alt="Meshtastic LoRa hardware" />
 </p>
 
-MeshClaw is an OpenClaw channel plugin that connects your AI gateway to Meshtastic LoRa mesh networks over Serial (USB), HTTP (WiFi), or MQTT.
+**MeshClaw** is an OpenClaw channel plugin that lets your AI gateway send and receive messages over Meshtastic — no internet, no cell towers, just radio waves. Talk to your AI assistant from the mountains, the ocean, or anywhere the grid doesn't reach.
 
 > [!IMPORTANT]
 > This repository is an **OpenClaw channel plugin**, not a standalone app.
@@ -27,12 +27,15 @@ MeshClaw is an OpenClaw channel plugin that connects your AI gateway to Meshtast
 
 [Meshtastic docs][docs] · [Report bug][issues] · [Request feature][issues]
 
+⭐ Star us on GitHub — it motivates us a lot!
+
 ## Table of Contents
 
+- [Features](#features)
+- [Capabilities & Roadmap](#capabilities--roadmap)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
 - [How It Works](#how-it-works)
-- [Key Features](#key-features)
 - [Transport Modes](#transport-modes)
 - [Access Control](#access-control)
 - [Configuration](#configuration)
@@ -43,6 +46,22 @@ MeshClaw is an OpenClaw channel plugin that connects your AI gateway to Meshtast
 - [Development](#development)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Features
+
+- **AI Agent Integration** — Bridges OpenClaw AI agents with Meshtastic LoRa mesh networks. Enables intelligent communication without cloud dependency.
+- **Three Transport Modes** — Serial (USB), HTTP (WiFi), and MQTT support
+- **DM & Group Channels with Access Control** — Supports both conversation modes with DM allowlists, channel response rules, and mention-gating
+- **Multi-Account Support** — Run multiple independent connections simultaneously
+- **Resilient Mesh Communication** — Auto-reconnect with configurable retries. Handles connection drops gracefully.
+
+## Capabilities & Roadmap
+
+The plugin treats Meshtastic as a first-class channel — just like Telegram or Discord — enabling AI conversations and skill invocation entirely over LoRa radio, without internet dependency.
+
+| Query Information Offline | Cross-Channel Bridge: Send from off-grid, receive anywhere | What's next |
+|---|---|---|
+| <img src="media/image1.png" alt="Query Information Offline" /> | <img src="media/image2.png" alt="Cross-Channel Bridge" /> | We plan to ingest real-time node data (GPS location, environmental sensors, device status) into OpenClaw's context, enabling the AI to monitor mesh network health and broadcast proactive alerts without waiting for user queries. |
 
 ## Prerequisites
 
@@ -89,15 +108,6 @@ flowchart LR
 
 Inbound messages pass through DM/group policy checks before reaching the AI agent.
 Outbound replies are converted to plain text and chunked for radio delivery.
-
-## Key Features
-
-- **Three transports**: Serial, HTTP, and MQTT
-- **DM policy controls**: `pairing`, `open`, or `allowlist`
-- **Group policy controls**: `disabled`, `open`, or `allowlist`
-- **Mention gating**: only reply in groups when mentioned (optional)
-- **Multi-account support**: run multiple independent Meshtastic connections
-- **Resilient transport handling**: reconnect behavior for unstable links
 
 ## Transport Modes
 
