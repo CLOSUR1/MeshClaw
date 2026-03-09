@@ -278,7 +278,7 @@ def _request_translation(
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
-            "User-Agent": "kimi-cli/1.0",
+            "User-Agent": "claude-code/2.1.71",
         },
         method="POST",
     )
